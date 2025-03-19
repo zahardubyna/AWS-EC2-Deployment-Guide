@@ -1,0 +1,87 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: node-application
+    build:
+      context: swapi
+    restart: always
+    volumes:
+      - ./swapi:/app
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - mysql_db
+      - redis_db
+    networks:
+      - main-network
+
+  mysql_db:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_DOCKER_HOST_PORT}:${MYSQL_DOCKER_CONTAINER_PORT}
+    volumes:
+      - mysqldata:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - main-network
+
+  redis_db:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    environment:
+      REDIS_DATABASES: 16
+    ports:
+      - ${REDIS_DOCKER_HOST_PORT}:${REDIS_DOCKER_CONTAINER_PORT}
+    volumes:
+      - redisdata:/var/lib/redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+    networks:
+      - main-network
+
+  nginx:
+      image: nginx:latest
+      container_name: nginx
+      restart: always
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+        - ./static:/var/www/html
+      ports:
+        - "80:80"
+        - "443:443"
+      depends_on:
+        - app
+      networks:
+        - main-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${DOMAIN} --agree-tos
+
+volumes:
+    mysqldata:
+    redisdata:
+
+networks:
+    main-network:
+      driver: bridge
