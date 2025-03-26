@@ -3,6 +3,7 @@ import { UserEntity } from './entity/user.entity';
 
 export enum UserActions {
   get = 'get',
+  // getMe = 'getMe',
   getById = 'getById',
   create = 'create',
   update = 'update',

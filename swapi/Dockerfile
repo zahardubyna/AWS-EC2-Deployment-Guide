@@ -1,12 +1,12 @@
 FROM node:23-alpine
 
-WORKDIR ~/4-backend
+WORKDIR ~/swapi-dir
 
-COPY . .
+COPY swapi .
 
-RUN npm install --force
+RUN npm install
 
-RUN npm install --force -g typescript @nestjs/cli
+RUN npm install -g typescript @nestjs/cli
 
 RUN tsc
 

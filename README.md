@@ -115,10 +115,10 @@ docker-compose --env-file ./swapi/.env up --build
 
 ```bash
 
-#A crontab can be created on linux systems by running:
+# A crontab can be created on linux systems by running:
 crontab -e
 
-#And adding a line with the following structure:
+# And adding a line with the following structure:
 0 5 1 */2 *  /usr/bin/docker compose -f /var/docker/docker-compose.yml --env-file ~/swapi/.env up certbot
 ```
 

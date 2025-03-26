@@ -18,7 +18,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "lib": ["es2021"],
     "jsx": "react",
     "paths": {
       "@users/*"          : ["src/users/*"],

@@ -94,7 +94,7 @@ export class TokenService {
       );
     }
 
-    if (refresh_token) {
+    if(refresh_token){
       await this.redisService.set(
         `${user.username}:${refresh_token}`,
         'whitelisted',
