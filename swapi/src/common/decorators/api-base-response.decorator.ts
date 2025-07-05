@@ -1,24 +1,27 @@
 import {
-  ApiBadRequestResponse, ApiForbiddenResponse,
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import objectContaining = jasmine.objectContaining;
 
 export const ApiBaseBadRequestResponse = () =>
   ApiBadRequestResponse({
-  description: `${HttpStatus.BAD_REQUEST}. Bad Request`,
-  schema: {
-    type: 'object',
-    example: {
-      code: 400,
-      error: 'Bad Request',
-      message: 'The server can\'t process the request because there\'s something wrong with what you sent.'
-    }
-  },
-});
+    description: `${HttpStatus.BAD_REQUEST}. Bad Request`,
+    schema: {
+      type: 'object',
+      example: {
+        success: false,
+        error: {
+          code: HttpStatus.BAD_REQUEST,
+          message:
+            "The server can't process the request because there's something wrong with what you sent.",
+        },
+      },
+    },
+  });
 
 export const ApiBaseUnauthorizedResponse = () =>
   ApiUnauthorizedResponse({
@@ -26,10 +29,13 @@ export const ApiBaseUnauthorizedResponse = () =>
     schema: {
       type: 'object',
       example: {
-        code: 401,
-        error: 'Unauthorized',
-        message: 'The request failed because it didn\'t include the correct authentication for the resource.'
-      }
+        success: false,
+        error: {
+          code: HttpStatus.UNAUTHORIZED,
+          message:
+            "The request failed because it didn't include the correct authentication for the resource.",
+        },
+      },
     },
   });
 
@@ -39,10 +45,13 @@ export const ApiBaseForbiddenResponse = () =>
     schema: {
       type: 'object',
       example: {
-        code: 403,
-        error: 'Forbidden',
-        message: 'An error occurred because the server denied access to the requested resource.'
-      }
+        success: false,
+        error: {
+          code: HttpStatus.FORBIDDEN,
+          message:
+            'An error occurred because the server denied access to the requested resource.',
+        },
+      },
     },
   });
 
@@ -52,32 +61,37 @@ export const ApiBaseNotFoundResponse = () =>
     schema: {
       type: 'object',
       example: {
-        code: 404,
-        error: 'Not Found',
-        message: 'The server couldn\'t find the requested resource.'
-      }
-    }
+        success: false,
+        error: {
+          code: HttpStatus.NOT_FOUND,
+          message: "The server couldn't find the requested resource.",
+        },
+      },
+    },
   });
 
 export const ApiBaseInternalServerErrorResponse = () =>
-   ApiInternalServerErrorResponse({
+  ApiInternalServerErrorResponse({
     description: `${HttpStatus.INTERNAL_SERVER_ERROR}. Internal Server Error`,
     schema: {
       type: 'object',
       example: {
-        code: 500,
-        error: 'Internal Server Error',
-        message: 'An internal server error occurred, preventing the server from fulfilling the request.'
-      }
-    }
+        success: false,
+        error: {
+          code: HttpStatus.INTERNAL_SERVER_ERROR,
+          message:
+            'An internal server error occurred, preventing the server from fulfilling the request.',
+        },
+      },
+    },
   });
 
-export const ApiBaseResponse = () => {
+export const ApiBaseResponses = () => {
   return applyDecorators(
-    ApiBaseBadRequestResponse,
-    ApiBaseUnauthorizedResponse,
-    ApiBaseForbiddenResponse,
-    ApiBaseNotFoundResponse,
-    ApiBaseInternalServerErrorResponse
+    ApiBaseUnauthorizedResponse(),
+    ApiBaseForbiddenResponse(),
+    ApiBaseBadRequestResponse(),
+    ApiBaseNotFoundResponse(),
+    ApiBaseInternalServerErrorResponse(),
   );
 };
